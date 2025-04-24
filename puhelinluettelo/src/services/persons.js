@@ -7,7 +7,16 @@ const getAll = () => {
 };
 
 const create = (newPerson) => {
-    return axios.post(baseUrl, newPerson).then(response => response.data);
+    return axios.post(baseUrl, newPerson)
+        .then(response => response.data)
+        .catch(error => {
+            if (error.response && error.response.status === 400 && error.response.data.error === 'duplicate') {
+                // If the backend indicates a duplicate, update the existing person
+                const existingPerson = error.response.data.person;
+                return update(existingPerson.id, newPerson);
+            }
+            throw error;
+        });
 };
 
 const remove = (id) => {
