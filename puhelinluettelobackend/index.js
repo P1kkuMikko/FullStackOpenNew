@@ -67,14 +67,26 @@ app.post('/api/persons', (req, res, next) => {
         return res.status(400).json({ error: 'Name or number is missing' });
     }
 
-    const person = new Person({
-        name: body.name,
-        number: body.number,
-    });
+    Person.findOne({ name: body.name })
+        .then((existingPerson) => {
+            if (existingPerson) {
+                // Update the number if the person already exists
+                existingPerson.number = body.number;
+                return existingPerson.save().then((updatedPerson) => {
+                    res.json(updatedPerson);
+                });
+            } else {
+                // Create a new person if they don't exist
+                const person = new Person({
+                    name: body.name,
+                    number: body.number,
+                });
 
-    person
-        .save()
-        .then((savedPerson) => res.json(savedPerson))
+                return person.save().then((savedPerson) => {
+                    res.json(savedPerson);
+                });
+            }
+        })
         .catch((error) => next(error));
 });
 
