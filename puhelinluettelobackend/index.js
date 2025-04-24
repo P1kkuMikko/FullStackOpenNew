@@ -3,6 +3,7 @@ const morgan = require('morgan'); // Import morgan
 const app = express();
 
 app.use(express.json());
+app.use(express.static('dist'))
 
 // Configure morgan to log POST request data
 morgan.token('body', (req) => JSON.stringify(req.body));
@@ -80,7 +81,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Internal Server Error' });
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+    console.log(`Server running on port ${PORT}`)
+})
