@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
-const Person = require('./models/person'); // Import the Person model
+const Person = require('./models/person');
 
 const app = express();
 
@@ -11,24 +11,26 @@ app.use(
     morgan(':method :url :status :res[content-length] - :response-time ms :body')
 );
 app.use(express.json());
-app.use(express.static('dist')); // Ensure the frontend build is served
+app.use(express.static('dist'));
 
-// Route to get all persons from MongoDB
-app.get('/api/persons', (req, res) => {
-    Person.find({}).then((persons) => {
-        res.json(persons);
-    });
+// Route to get all persons
+app.get('/api/persons', (req, res, next) => {
+    Person.find({})
+        .then((persons) => res.json(persons))
+        .catch((error) => next(error));
 });
 
 // Route to get info page
-app.get('/info', (req, res) => {
-    Person.countDocuments({}).then((count) => {
-        const info = `
-        <p>Phonebook has info for ${count} people</p>
-        <p>${new Date()}</p>
-      `;
-        res.send(info);
-    });
+app.get('/info', (req, res, next) => {
+    Person.countDocuments({})
+        .then((count) => {
+            const info = `
+            <p>Phonebook has info for ${count} people</p>
+            <p>${new Date()}</p>
+          `;
+            res.send(info);
+        })
+        .catch((error) => next(error));
 });
 
 // Route to get a single person by ID
@@ -46,9 +48,13 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 // Route to delete a person by ID
 app.delete('/api/persons/:id', (req, res, next) => {
-    Person.findByIdAndRemove(req.params.id)
-        .then(() => {
-            res.status(204).end();
+    Person.findByIdAndDelete(req.params.id)
+        .then((result) => {
+            if (result) {
+                res.status(204).end();
+            } else {
+                res.status(404).end();
+            }
         })
         .catch((error) => next(error));
 });
@@ -68,19 +74,47 @@ app.post('/api/persons', (req, res, next) => {
 
     person
         .save()
-        .then((savedPerson) => {
-            res.json(savedPerson);
+        .then((savedPerson) => res.json(savedPerson))
+        .catch((error) => next(error));
+});
+
+// Route to update an existing person
+app.put('/api/persons/:id', (req, res, next) => {
+    const { name, number } = req.body;
+
+    Person.findById(req.params.id)
+        .then((person) => {
+            if (!person) {
+                return res.status(404).end();
+            }
+
+            person.name = name;
+            person.number = number;
+
+            return person.save().then((updatedPerson) => res.json(updatedPerson));
         })
         .catch((error) => next(error));
 });
 
-// Fallback error handler for debugging
-app.use((err, req, res, next) => {
-    console.error('Error:', err.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-});
+// Middleware for unknown endpoints
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'unknown endpoint' });
+};
+app.use(unknownEndpoint);
 
-const PORT = process.env.PORT
+// Centralized error handling middleware
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message);
+
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'malformatted id' });
+    }
+
+    next(error);
+};
+app.use(errorHandler);
+
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
