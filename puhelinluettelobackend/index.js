@@ -9,7 +9,7 @@ app.use(
     morgan(':method :url :status :res[content-length] - :response-time ms :body')
 );
 app.use(express.json());
-app.use(express.static('dist'))
+app.use(express.static('dist')); // Ensure the frontend build is served
 
 let persons = [
     { id: 1, name: 'Arto Hellas', number: '040-123456' },
