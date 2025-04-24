@@ -2,14 +2,14 @@ const express = require('express');
 const morgan = require('morgan'); // Import morgan
 const app = express();
 
-app.use(express.json());
-app.use(express.static('dist'))
 
 // Configure morgan to log POST request data
 morgan.token('body', (req) => JSON.stringify(req.body));
 app.use(
     morgan(':method :url :status :res[content-length] - :response-time ms :body')
 );
+app.use(express.json());
+app.use(express.static('dist'))
 
 let persons = [
     { id: 1, name: 'Arto Hellas', number: '040-123456' },
