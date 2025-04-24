@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = '/api/persons';
+const baseUrl = '/api/persons'; // Ensure this matches the backend endpoint
 
 const getAll = () => {
     return axios.get(baseUrl).then(response => response.data);

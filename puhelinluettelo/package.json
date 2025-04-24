@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "json-server -p 3001 db.json",
-    "build:ui": "rm -rf dist && cd ../puhelinluettelo && npm run build && cp -r dist ../puhelinluettelobackend",
+    "build:ui": "rm -rf ../puhelinluettelobackend/dist && npm run build && cp -r dist ../puhelinluettelobackend/",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
   "dependencies": {
