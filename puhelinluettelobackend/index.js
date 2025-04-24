@@ -16,7 +16,14 @@ app.use(express.static('dist'));
 // Route to get all persons
 app.get('/api/persons', (req, res, next) => {
     Person.find({})
-        .then((persons) => res.json(persons))
+        .then((persons) => {
+            // Ensure no duplicate entries are returned
+            const uniquePersons = persons.filter(
+                (person, index, self) =>
+                    index === self.findIndex((p) => p.name === person.name)
+            );
+            res.json(uniquePersons);
+        })
         .catch((error) => next(error));
 });
 
@@ -26,7 +33,7 @@ app.get('/info', (req, res, next) => {
         .then((count) => {
             const info = `
             <p>Phonebook has info for ${count} people</p>
-            <p>${new Date()}</p>
+            <p>${new Date().toString()}</p>
           `;
             res.send(info);
         })
@@ -38,9 +45,13 @@ app.get('/api/persons/:id', (req, res, next) => {
     Person.findById(req.params.id)
         .then((person) => {
             if (person) {
-                res.json(person);
+                res.json({
+                    name: person.name,
+                    number: person.number,
+                    id: person.id,
+                });
             } else {
-                res.status(404).end();
+                res.status(404).json({ error: 'Person not found' });
             }
         })
         .catch((error) => next(error));
@@ -67,27 +78,19 @@ app.post('/api/persons', (req, res, next) => {
         return res.status(400).json({ error: 'Name or number is missing' });
     }
 
-    Person.findOne({ name: body.name })
-        .then((existingPerson) => {
-            if (existingPerson) {
-                // Return conflict error if the person already exists
-                return res.status(409).json({
-                    error: 'duplicate',
-                    person: existingPerson,
-                });
+    Person.findOneAndUpdate(
+        { name: body.name },
+        { number: body.number },
+        { new: true, upsert: true, runValidators: true, context: 'query' }
+    )
+        .then((person) => res.json(person))
+        .catch((error) => {
+            if (error.code === 11000) {
+                res.status(409).json({ error: 'Name must be unique' });
             } else {
-                // Create a new person if they don't exist
-                const person = new Person({
-                    name: body.name,
-                    number: body.number,
-                });
-
-                return person.save().then((savedPerson) => {
-                    res.json(savedPerson);
-                });
+                next(error);
             }
-        })
-        .catch((error) => next(error));
+        });
 });
 
 // Route to update an existing person

@@ -49,19 +49,21 @@ const App = () => {
 
     personService
       .create(newPerson)
-      .then(response => {
-        setPersons(persons.map(person => person.id === response.id ? response : person).concat(response));
+      .then((response) => {
+        setPersons((prevPersons) =>
+          prevPersons.some((person) => person.id === response.id)
+            ? prevPersons.map((person) =>
+                person.id === response.id ? response : person
+              )
+            : prevPersons.concat(response)
+        );
         setNotification({ message: `Added or updated ${newName}`, type: 'success' });
         setTimeout(() => setNotification({ message: null, type: null }), 5000);
         setNewName('');
         setNewNumber('');
       })
-      .catch(error => {
-        if (error.response?.status === 409) {
-          setNotification({ message: `Updated ${newName}'s number`, type: 'success' });
-        } else {
-          setNotification({ message: error.response?.data?.error || `Failed to add ${newName}`, type: 'error' });
-        }
+      .catch((error) => {
+        setNotification({ message: error.response?.data?.error || `Failed to add ${newName}`, type: 'error' });
         setTimeout(() => setNotification({ message: null, type: null }), 5000);
       });
   };
