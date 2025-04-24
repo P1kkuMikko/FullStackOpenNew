@@ -45,26 +45,19 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-    const existingPerson = persons.find(person => person.name === newName);
-
-    if (existingPerson) {
-      alert(`${newName} is already added to the phonebook.`);
-      return;
-    }
-
     const newPerson = { name: newName, number: newNumber };
 
     personService
       .create(newPerson)
       .then(response => {
-        setPersons(persons.concat(response));
-        setNotification({ message: `Added ${newName}`, type: 'success' });
+        setPersons(persons.map(person => person.id === response.id ? response : person).concat(response));
+        setNotification({ message: `Added or updated ${newName}`, type: 'success' });
         setTimeout(() => setNotification({ message: null, type: null }), 5000);
         setNewName('');
         setNewNumber('');
       })
       .catch(error => {
-        setNotification({ message: error.response.data.error || `Failed to add ${newName}`, type: 'error' });
+        setNotification({ message: error.response?.data?.error || `Failed to add ${newName}`, type: 'error' });
         setTimeout(() => setNotification({ message: null, type: null }), 5000);
       });
   };

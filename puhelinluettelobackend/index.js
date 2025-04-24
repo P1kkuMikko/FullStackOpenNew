@@ -59,7 +59,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .catch((error) => next(error));
 });
 
-// Route to add a new person
+// Route to add a new person or update an existing one
 app.post('/api/persons', (req, res, next) => {
     const body = req.body;
 
@@ -70,10 +70,10 @@ app.post('/api/persons', (req, res, next) => {
     Person.findOne({ name: body.name })
         .then((existingPerson) => {
             if (existingPerson) {
-                // Update the number if the person already exists
-                existingPerson.number = body.number;
-                return existingPerson.save().then((updatedPerson) => {
-                    res.json(updatedPerson);
+                // Return conflict error if the person already exists
+                return res.status(409).json({
+                    error: 'duplicate',
+                    person: existingPerson,
                 });
             } else {
                 // Create a new person if they don't exist
@@ -94,16 +94,21 @@ app.post('/api/persons', (req, res, next) => {
 app.put('/api/persons/:id', (req, res, next) => {
     const { name, number } = req.body;
 
-    Person.findById(req.params.id)
-        .then((person) => {
-            if (!person) {
-                return res.status(404).end();
+    if (!name || !number) {
+        return res.status(400).json({ error: 'Name or number is missing' });
+    }
+
+    Person.findByIdAndUpdate(
+        req.params.id,
+        { name, number },
+        { new: true, runValidators: true, context: 'query' }
+    )
+        .then((updatedPerson) => {
+            if (updatedPerson) {
+                res.json(updatedPerson);
+            } else {
+                res.status(404).end();
             }
-
-            person.name = name;
-            person.number = number;
-
-            return person.save().then((updatedPerson) => res.json(updatedPerson));
         })
         .catch((error) => next(error));
 });

@@ -10,7 +10,7 @@ const create = (newPerson) => {
     return axios.post(baseUrl, newPerson)
         .then(response => response.data)
         .catch(error => {
-            if (error.response && error.response.status === 400 && error.response.data.error === 'duplicate') {
+            if (error.response && error.response.status === 409 && error.response.data.error === 'duplicate') {
                 // If the backend indicates a duplicate, update the existing person
                 const existingPerson = error.response.data.person;
                 return update(existingPerson.id, newPerson);
