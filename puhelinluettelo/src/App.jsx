@@ -57,7 +57,11 @@ const App = () => {
         setNewNumber('');
       })
       .catch(error => {
-        setNotification({ message: error.response?.data?.error || `Failed to add ${newName}`, type: 'error' });
+        if (error.response?.status === 409) {
+          setNotification({ message: `Updated ${newName}'s number`, type: 'success' });
+        } else {
+          setNotification({ message: error.response?.data?.error || `Failed to add ${newName}`, type: 'error' });
+        }
         setTimeout(() => setNotification({ message: null, type: null }), 5000);
       });
   };
