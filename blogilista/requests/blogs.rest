@@ -1,13 +1,29 @@
 ### Get all blogs
 GET http://localhost:3003/api/blogs
 
-### Create a new blog
+### Create a new blog with authentication
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 {
-  "title": "Test Blog",
+  "title": "Test Blog with Authentication",
   "author": "Test Author",
   "url": "https://testblog.com",
   "likes": 5
+}
+
+### Delete a blog with authentication
+DELETE http://localhost:3003/api/blogs/[blog-id-here]
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### Update a blog
+PUT http://localhost:3003/api/blogs/[blog-id-here]
+Content-Type: application/json
+
+{
+  "title": "Updated Blog",
+  "author": "Updated Author",
+  "url": "https://updatedblog.com",
+  "likes": 10
 }
