@@ -10,7 +10,10 @@ const app = express()
 logger.info('connecting to', config.MONGODB_URI)
 
 mongoose
-    .connect(config.MONGODB_URI)
+    .connect(config.MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+        socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+    })
     .then(() => {
         logger.info('connected to MongoDB')
     })

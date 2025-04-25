@@ -24,8 +24,14 @@ const errorHandler = (error, request, response, next) => {
     next(error)
 }
 
+// Helper function to wrap async route handlers and catch errors automatically
+const asyncHandler = (fn) => (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next)
+}
+
 module.exports = {
     requestLogger,
     unknownEndpoint,
-    errorHandler
+    errorHandler,
+    asyncHandler
 }

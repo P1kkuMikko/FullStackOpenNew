@@ -12,10 +12,7 @@ const api = supertest(app)
 describe('when there are initially some notes saved', () => {
     beforeEach(async () => {
         await Note.deleteMany({})
-
-        const noteObjects = helper.initialNotes.map(note => new Note(note))
-        const promiseArray = noteObjects.map(note => note.save())
-        await Promise.all(promiseArray)
+        await Note.insertMany(helper.initialNotes)
     })
 
     test('notes are returned as json', async () => {
@@ -76,7 +73,7 @@ describe('when there are initially some notes saved', () => {
             await api
                 .post('/api/notes')
                 .send(newNote)
-                .expect(200)
+                .expect(201)
                 .expect('Content-Type', /application\/json/)
 
             const notesAtEnd = await helper.notesInDb()
