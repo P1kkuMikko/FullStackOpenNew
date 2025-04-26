@@ -27,6 +27,19 @@ app.use(middleware.tokenExtractor)
 // Serve static files from the frontend build
 app.use(express.static('build'))
 
+// Health check endpoint for monitoring
+app.get('/health', (req, res) => {
+    res.send('ok')
+})
+
+app.get('/info', (req, res) => {
+    res.send(`
+        <p>Blog list application</p>
+        <p>Server running on port ${config.PORT}</p>
+        <p>${new Date()}</p>
+    `)
+})
+
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
