@@ -40,12 +40,28 @@ app.get('/info', (req, res) => {
     `)
 })
 
+// API routes
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
-// For all routes not handled by the API, serve the frontend
-app.get('*', (req, res) => {
+// For frontend routes, serve the index.html
+// Instead of using '*', specify exact routes or patterns
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
+
+// Handle common frontend routes
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
+
+app.get('/blogs', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
+
+// Serve index.html for any unmatched routes without using '*'
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 
