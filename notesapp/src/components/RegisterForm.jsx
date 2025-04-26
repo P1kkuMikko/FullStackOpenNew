@@ -1,22 +1,28 @@
-import { useState } from 'react'
-import userService from '../services/users'
+import { useState } from 'react';
+import userService from '../services/users';
+import PropTypes from 'prop-types';
 
-const RegisterForm = ({ setNotification, setUser, loginService, noteService }) => {
-  const [username, setUsername] = useState('')
-  const [name, setName] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
+const RegisterForm = ({
+  setNotification,
+  setUser,
+  loginService,
+  noteService,
+}) => {
+  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
 
   const handleRegister = async (event) => {
-    event.preventDefault()
-    
+    event.preventDefault();
+
     // Validate passwords match
     if (password !== passwordConfirm) {
-      setNotification({ message: 'Passwords do not match', type: 'error' })
+      setNotification({ message: 'Passwords do not match', type: 'error' });
       setTimeout(() => {
-        setNotification(null)
-      }, 5000)
-      return
+        setNotification(null);
+      }, 5000);
+      return;
     }
 
     try {
@@ -24,96 +30,95 @@ const RegisterForm = ({ setNotification, setUser, loginService, noteService }) =
       await userService.register({
         username,
         name,
-        password
-      })
+        password,
+      });
 
       // Auto-login after successful registration
       const user = await loginService.login({
         username,
-        password
-      })
+        password,
+      });
 
-      window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
-      )
-      noteService.setToken(user.token)
-      setUser(user)
-      
+      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user));
+      noteService.setToken(user.token);
+      setUser(user);
+
       // Reset form
-      setUsername('')
-      setName('')
-      setPassword('')
-      setPasswordConfirm('')
+      setUsername('');
+      setName('');
+      setPassword('');
+      setPasswordConfirm('');
 
       // Show success message
-      setNotification({ message: 'Registration successful! You are now logged in.', type: 'success' })
+      setNotification({
+        message: 'Registration successful! You are now logged in.',
+        type: 'success',
+      });
       setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+        setNotification(null);
+      }, 5000);
     } catch (exception) {
-      console.error('Registration error:', exception)
-      const errorMsg = exception.response?.data?.error || 'Registration failed'
-      setNotification({ message: errorMsg, type: 'error' })
+      console.error('Registration error:', exception);
+      const errorMsg = exception.response?.data?.error || 'Registration failed';
+      setNotification({ message: errorMsg, type: 'error' });
       setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+        setNotification(null);
+      }, 5000);
     }
-  }
+  };
 
   return (
-    <div className="register-form">
+    <div>
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
         <div>
-          <label htmlFor="username">Username (min 3 characters):</label>
+          username
           <input
-            id="username"
-            type="text"
             value={username}
-            name="Username"
-            minLength="3"
-            required
             onChange={({ target }) => setUsername(target.value)}
+            name='Username'
+            autoComplete='username'
           />
         </div>
         <div>
-          <label htmlFor="name">Name:</label>
+          name
           <input
-            id="name"
-            type="text"
             value={name}
-            name="Name"
             onChange={({ target }) => setName(target.value)}
+            name='Name'
           />
         </div>
         <div>
-          <label htmlFor="password">Password (min 3 characters):</label>
+          password
           <input
-            id="password"
-            type="password"
+            type='password'
             value={password}
-            name="Password"
-            minLength="3"
-            required
             onChange={({ target }) => setPassword(target.value)}
+            name='Password'
+            autoComplete='new-password'
           />
         </div>
         <div>
-          <label htmlFor="passwordConfirm">Confirm Password:</label>
+          confirm password
           <input
-            id="passwordConfirm"
-            type="password"
+            type='password'
             value={passwordConfirm}
-            name="PasswordConfirm"
-            minLength="3"
-            required
             onChange={({ target }) => setPasswordConfirm(target.value)}
+            name='PasswordConfirm'
+            autoComplete='new-password'
           />
         </div>
-        <button type="submit">Register</button>
+        <button type='submit'>register</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default RegisterForm
+RegisterForm.propTypes = {
+  setNotification: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
+  loginService: PropTypes.object.isRequired,
+  noteService: PropTypes.object.isRequired,
+};
+
+export default RegisterForm;

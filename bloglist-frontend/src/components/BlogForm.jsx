@@ -13,6 +13,7 @@ const BlogForm = ({ createBlog }) => {
       url,
     });
 
+    // Reset form fields after submission
     setTitle('');
     setAuthor('');
     setUrl('');
@@ -26,6 +27,7 @@ const BlogForm = ({ createBlog }) => {
           title
           <input
             type='text'
+            id='title'
             value={title}
             onChange={({ target }) => setTitle(target.value)}
             placeholder='title'
@@ -35,6 +37,7 @@ const BlogForm = ({ createBlog }) => {
           author
           <input
             type='text'
+            id='author'
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
             placeholder='author'
@@ -44,12 +47,15 @@ const BlogForm = ({ createBlog }) => {
           url
           <input
             type='text'
+            id='url'
             value={url}
             onChange={({ target }) => setUrl(target.value)}
             placeholder='url'
           />
         </div>
-        <button type='submit'>create</button>
+        <button type='submit' id='create-button'>
+          create
+        </button>
       </form>
     </div>
   );
