@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "json-server -p 3001 db.json",
-    "build:ui": "rm -rf dist && cd ../notesapp && npm run build && cp -r dist ../notesappbackend",
+    "build:ui": "if exist ..\\notesappbackend\\dist rmdir /s /q ..\\notesappbackend\\dist && npm run build && xcopy dist\\* ..\\notesappbackend\\dist\\ /E /I /Y",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "test": "vitest run",
     "test:watch": "vitest"
