@@ -13,8 +13,8 @@
     "build:ui:windows": "if exist build rmdir /s /q build && cd ../blogilistafrontend && npm run build && xcopy /s /i dist ..\\blogilista\\build",
     "deploy": "npm run build:ui:windows && npm run start",
     "deploy:full": "npm run lint && npm run test && npm run build:ui:windows && npm run start",
-    "start:prod": "NODE_ENV=production node index.js",
-    "start:test": "NODE_ENV=test node index.js"
+    "start:prod": "cross-env NODE_ENV=production node index.js",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "keywords": [],
   "author": "",

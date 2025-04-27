@@ -43,23 +43,31 @@ const Blog = ({ blog, updateBlogs, handleDelete, currentUser }) => {
       blog.user.id === currentUser.id);
 
   return (
-    <div style={blogStyle}>
-      <div>
+    <div style={blogStyle} className='blog' data-testid={`blog-${blog.id}`}>
+      <div className='blog-header'>
         {blog.title} {blog.author}
-        <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+        <button
+          onClick={toggleVisibility}
+          data-testid={`view-button-${blog.id}`}
+        >
+          {visible ? 'hide' : 'view'}
+        </button>
       </div>
       {visible && (
-        <div>
+        <div className='blog-details'>
           <div>{blog.url}</div>
-          <div>
+          <div className='likes'>
             likes {blog.likes}
-            <button onClick={handleLike}>like</button>
+            <button onClick={handleLike} data-testid={`like-button-${blog.id}`}>
+              like
+            </button>
           </div>
           <div>{blog.user && blog.user.name}</div>
           {isOwner && (
             <button
               onClick={handleDelete}
               style={{ backgroundColor: '#f44336', color: 'white' }}
+              data-testid={`remove-button-${blog.id}`}
             >
               remove
             </button>

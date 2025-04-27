@@ -45,6 +45,12 @@ app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
+// Testing router - only used in test environment
+if (process.env.NODE_ENV === 'test') {
+    const testingRouter = require('./controllers/testing')
+    app.use('/api/testing', testingRouter)
+}
+
 // For frontend routes, serve the index.html
 // Instead of using '*', specify exact routes or patterns
 app.get('/', (req, res) => {

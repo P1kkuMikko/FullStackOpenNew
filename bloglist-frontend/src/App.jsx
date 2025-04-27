@@ -67,7 +67,7 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject);
       fetchBlogs(); // Fetch all blogs to get the updated list with proper user info
       showNotification(
-        `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`
+        `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
       );
     } catch (exception) {
       showNotification('Error creating blog', 'error');

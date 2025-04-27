@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+// eslint-disable-next-line react/prop-types
 const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -28,6 +29,7 @@ const BlogForm = ({ createBlog }) => {
           <input
             type='text'
             id='title'
+            name='Title'
             value={title}
             onChange={({ target }) => setTitle(target.value)}
             placeholder='title'
@@ -38,6 +40,7 @@ const BlogForm = ({ createBlog }) => {
           <input
             type='text'
             id='author'
+            name='Author'
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
             placeholder='author'
@@ -48,6 +51,7 @@ const BlogForm = ({ createBlog }) => {
           <input
             type='text'
             id='url'
+            name='Url'
             value={url}
             onChange={({ target }) => setUrl(target.value)}
             placeholder='url'
