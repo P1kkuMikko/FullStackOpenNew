@@ -1,8 +1,25 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import App from './App.jsx';
+import noteReducer from './reducers/noteReducer';
+import filterReducer from './reducers/filterReducer';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders notes', () => {
+  const store = configureStore({
+    reducer: {
+      notes: noteReducer,
+      filter: filterReducer
+    }
+  });
+
+  render(
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
+
+  // Expecting the app to render rather than looking for "learn react"
+  const element = screen.getByText(/notes/i, { exact: false });
+  expect(element).toBeInTheDocument();
 });
