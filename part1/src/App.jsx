@@ -1,28 +1,46 @@
-import { useState } from 'react'
-
-const Display = props => <div>{props.value}</div>
-
-const Button = (props) => (
-  <button onClick={props.onClick}>
-    {props.text}
-  </button>
-)
+import { useState } from 'react';
+import CounterExample from './components/CounterExample';
+import TwoCountersExample from './components/TwoCountersExample';
+import FormExample from './components/FormExample';
 
 const App = () => {
-  const [value, setValue] = useState(10)
+  const [page, setPage] = useState('counter');
 
-  const setToValue = newValue => {
-    console.log('value now', newValue)
-    setValue(newValue)
-  }
+  const toPage = (page) => () => {
+    setPage(page);
+  };
+
+  const content = () => {
+    if (page === 'counter') {
+      return <CounterExample />;
+    } else if (page === 'twoCounters') {
+      return <TwoCountersExample />;
+    } else if (page === 'form') {
+      return <FormExample />;
+    }
+  };
+
+  const padding = {
+    padding: 5,
+  };
 
   return (
     <div>
-      <Display value={value} />
-      <Button onClick={() => setToValue(1000)} text="thousand" />
-      <Button onClick={() => setToValue(0)} text="reset" />
-      <Button onClick={() => setToValue(value + 1)} text="increment" />
+      <h1>Custom Hooks Examples</h1>
+      <div>
+        <button style={padding} onClick={toPage('counter')}>
+          Counter
+        </button>
+        <button style={padding} onClick={toPage('twoCounters')}>
+          Two Counters
+        </button>
+        <button style={padding} onClick={toPage('form')}>
+          Form
+        </button>
+      </div>
+      {content()}
     </div>
-  )
-}
-export default App
+  );
+};
+
+export default App;

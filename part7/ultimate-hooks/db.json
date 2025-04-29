@@ -1,0 +1,15 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "This is a note created with custom hook"
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "number": "040-1234567"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "blogilista",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development node --watch index.js",
+    "test": "cross-env NODE_ENV=test node --test",
+    "test:windows": "cross-env NODE_ENV=test node --test",
+    "lint": "eslint .",
+    "build:ui": "rm -rf build && cd ../frontend && npm run build && cp -r dist ../backend/build",
+    "build:ui:windows": "if exist build rmdir /s /q build && cd ../frontend && npm run build && xcopy /s /i dist ..\\backend\\build",
+    "deploy": "npm run build:ui:windows && npm run start",
+    "deploy:full": "npm run lint && npm run test && npm run build:ui:windows && npm run start",
+    "start:prod": "cross-env NODE_ENV=production node index.js",
+    "start:test": "cross-env NODE_ENV=test node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@stylistic/eslint-plugin-js": "^4.2.0",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
+    "supertest": "^7.1.0"
+  }
+}
